@@ -8,9 +8,9 @@
 
 
 
-Block::Block(Transaction transaction, string previous_hash) {
+Block::Block(vector<Transaction> &transactions, string previous_hash) {
 this->timestamp = time(NULL);
-this->transaction = std::move(transaction);
+this->transactions = transactions;
 this->previous_hash = previous_hash;
 this->zeros = 2;
 this->hash = this->calculate_hash();
@@ -26,7 +26,11 @@ string Block::calculate_hash() {
     long int NONCE_LIMIT = 10000000000;
     int ident = 0;
     string res;
-    string src = to_string(this->timestamp) + this->transaction.from_adress + this->transaction.to_adress + to_string(this->transaction.amount) + this->previous_hash;
+    string temp;
+    for (int i = 0; i < this->transactions.size(); ++i) {
+       temp = this->transactions[i].from_adress + this->transactions[i].to_adress + to_string(this->transactions[i].amount);
+    }
+    string src = to_string(this->timestamp) + temp + this->previous_hash;
 
     for (int i = 0; i < NONCE_LIMIT; ++i) {
         res = picosha2::hash256_hex_string(src + to_string(i));
@@ -74,7 +78,8 @@ this->chain.push_back(create_genesis_block());
 
 Block Blockchain::create_genesis_block() {
     Transaction first("ghjkkgyufs5656ft8gg", "ghjgyuj784r5fvh89hjol8", 100);
-    Block new_block(first, "uioj45641ki");
+    vector<Transaction> trans = {first};
+    Block new_block(trans, "uioj45641ki");
 
     return new_block;
 }
@@ -83,17 +88,23 @@ Block Blockchain::get_latest_block() {
     return this->chain[this->chain.size() -1];
 }
 
-void Blockchain::add_block(Transaction transaction) {
+
+
+void Blockchain::add_block(string reward_address) {
     string prev_hash = get_latest_block().hash;
 
-    Block new_block(transaction, prev_hash);
+    Block new_block(this->pending_t, prev_hash);
 
     this->chain.push_back(new_block);
+    Transaction reward("none", reward_address, this->mining_reward);
+    this->pending_t.push_back(reward);
     for (int i = 0; i < chain.size(); ++i) {
         cout<<chain[i]<<endl;
     }
 
 }
+
+
 ostream& operator<<(ostream& os, const Blockchain & point)
 {
     for (int i = 0; i < point.chain.size(); ++i) {
@@ -118,6 +129,26 @@ bool Blockchain::is_chain_valid() {
     }
     return true;
 }
+
+void Blockchain::add_pend_t(Transaction transaction) {
+this->pending_t.push_back(transaction);
+}
+
+int Blockchain::get_balance_amount(string address) {
+    int balance = 0;
+
+    for (int i = 1; i < this->chain.size(); i++) {
+        for (int j = 0; j < this->chain[i].transactions.size(); ++j) {
+           if(this->chain[i].transactions[j].from_adress == address){
+               balance -= this->chain[i].transactions[j].amount;
+           }
+            if (this->chain[i].transactions[j].to_adress == address)
+                balance += this->chain[i].transactions[j].amount;
+        }
+    }
+    return balance;
+}
+
 
 Transaction::Transaction(string from_adress, string to_adress, int amount) {
 this->from_adress = from_adress;

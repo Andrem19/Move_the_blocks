@@ -16,16 +16,15 @@ public:
 
 class Block {
 public:
-    Block(Transaction transaction, string previous_hash);
+    Block(vector<Transaction> &transactions, string previous_hash);
 
     int timestamp;
     int zeros;
-    Transaction transaction;
+    vector<Transaction> transactions;
     string previous_hash;
     string hash;
     string calculate_hash();
 
-Block(Transaction transaction, string previous_hash, Transaction transaction1);
     friend ostream& operator<<(ostream& os, const Block& point);
     friend bool operator== (const Block &c1, const Block &c2);
     friend bool operator!= (const Block &c1, const Block &c2);
@@ -35,13 +34,15 @@ Block(Transaction transaction, string previous_hash, Transaction transaction1);
 class Blockchain{
 public:
     vector<Block> chain;
-    vector<Block> pending_t;
     int mining_reward = 100;
 
     Blockchain();
     Block create_genesis_block();
     Block get_latest_block();
-    void add_block(Transaction transaction);
+    vector<Transaction> pending_t;
+    void add_pend_t(Transaction transaction);
+    void add_block(string reward_address);
+    int get_balance_amount(string address);
     bool is_chain_valid();
     friend ostream& operator<<(ostream& os, const Blockchain& point);
 };
