@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/CODE/C++_new/blockchain_sj-cpp/Block.cpp
+Block.h
+D:/CODE/C++_new/blockchain_sj-cpp/Block.h
+
+D:/CODE/C++_new/blockchain_sj-cpp/Block.h
+iostream
+-
+vector
+-
+picosha2.h
+D:/CODE/C++_new/blockchain_sj-cpp/picosha2.h
+string
+-
+
+D:/CODE/C++_new/blockchain_sj-cpp/main.cpp
+iostream
+-
+picosha2.h
+D:/CODE/C++_new/blockchain_sj-cpp/picosha2.h
+Block.h
+D:/CODE/C++_new/blockchain_sj-cpp/Block.h
+
+D:/CODE/C++_new/blockchain_sj-cpp/picosha2.h
+algorithm
+-
+cassert
+-
+iterator
+-
+sstream
+-
+vector
+-
+fstream
+-
+
